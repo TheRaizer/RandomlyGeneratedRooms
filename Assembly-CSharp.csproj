@@ -55,15 +55,15 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Guns\AK47.cs" />
-    <Compile Include="Assets\Scripts\ObjectPooler.cs" />
-    <Compile Include="Assets\Scripts\Gun.cs" />
-    <Compile Include="Assets\Scripts\Room.cs" />
-    <Compile Include="Assets\Scripts\SetActiveWhenOffScreen.cs" />
-    <Compile Include="Assets\Scripts\RoomsGenerator.cs" />
-    <Compile Include="Assets\Scripts\CoverOpenings.cs" />
-    <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Weapons\AK47.cs" />
+    <Compile Include="Assets\Scripts\GameManagement\ObjectPooler.cs" />
+    <Compile Include="Assets\Scripts\Weapons\Gun.cs" />
+    <Compile Include="Assets\Scripts\RoomGeneration\Room.cs" />
+    <Compile Include="Assets\Scripts\GameManagement\SetActiveWhenOffScreen.cs" />
+    <Compile Include="Assets\Scripts\RoomGeneration\RoomsGenerator.cs" />
+    <Compile Include="Assets\Scripts\RoomGeneration\CoverOpenings.cs" />
+    <Compile Include="Assets\Scripts\Weapons\Weapon.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
