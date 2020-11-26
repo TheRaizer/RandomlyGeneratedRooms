@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class CoverOpenings : MonoBehaviour
@@ -12,6 +10,7 @@ public class CoverOpenings : MonoBehaviour
     private WaitForSeconds timeTillCover;
 
     private bool choseEnd;
+
 
     private void Awake()
     {
@@ -32,65 +31,72 @@ public class CoverOpenings : MonoBehaviour
 
     private void Cover()
     {
-        GameObject roomObject = null;
-        if (roomGenerator.openings.ContainsKey(0))
+        GameObject roomGameObject = null;
+        if (roomGenerator.openings.ContainsKey(RoomTypes.up))
         {
-            foreach (GameObject room in roomGenerator.openings[0])
+            foreach (GameObject room in roomGenerator.openings[RoomTypes.up]) // for each room with an opening above it
             {
-                roomObject = Instantiate(roomGenerator.closingRoomDown, new Vector3(room.transform.position.x, room.transform.position.y + 6.042f, room.transform.position.z), Quaternion.identity);
-                if (!choseEnd)
-                {
-                    roomObject.GetComponent<Room>().isEnd = Random.Range(0, 2) == 0;
-                    if (roomObject.GetComponent<Room>().isEnd)
-                        choseEnd = true;
-                }
+                //generate the cover with a opening below it and place it above the room with the opening.
+                roomGameObject = Instantiate(roomGenerator.closingRoomDown,
+                            new Vector3(room.transform.position.x, room.transform.position.y + RoomsGenerator.DISTANCE_BETWEEN_ROOMS, 
+                            room.transform.position.z), 
+                            Quaternion.identity);
+
+                ChooseEnd(roomGameObject);
             }
         }
-        if (roomGenerator.openings.ContainsKey(1))
+        if (roomGenerator.openings.ContainsKey(RoomTypes.down))
         {
-            foreach (GameObject room in roomGenerator.openings[1])
+            foreach (GameObject room in roomGenerator.openings[RoomTypes.down])
             {
-                roomObject = Instantiate(roomGenerator.closingRoomUp, new Vector3(room.transform.position.x, room.transform.position.y - 6.042f, room.transform.position.z), Quaternion.identity);
+                roomGameObject = Instantiate(roomGenerator.closingRoomUp, 
+                            new Vector3(room.transform.position.x, room.transform.position.y - RoomsGenerator.DISTANCE_BETWEEN_ROOMS, 
+                            room.transform.position.z), 
+                            Quaternion.identity);
 
-                if (!choseEnd)
-                {
-                    roomObject.GetComponent<Room>().isEnd = Random.Range(0, 2) == 0;
-                    if (roomObject.GetComponent<Room>().isEnd)
-                        choseEnd = true;
-                }
+                ChooseEnd(roomGameObject);
             }
         }
 
-        if (roomGenerator.openings.ContainsKey(2))
+        if (roomGenerator.openings.ContainsKey(RoomTypes.left))
         {
-            foreach (GameObject room in roomGenerator.openings[2])
+            foreach (GameObject room in roomGenerator.openings[RoomTypes.left])
             {
-                roomObject = Instantiate(roomGenerator.closingRoomRight, new Vector3(room.transform.position.x - 6.042f, room.transform.position.y, room.transform.position.z), Quaternion.identity);
-                if (!choseEnd)
-                {
-                    roomObject.GetComponent<Room>().isEnd = Random.Range(0, 2) == 0;
-                    if (roomObject.GetComponent<Room>().isEnd)
-                        choseEnd = true;
-                }
+                roomGameObject = Instantiate(roomGenerator.closingRoomRight, 
+                            new Vector3(room.transform.position.x - RoomsGenerator.DISTANCE_BETWEEN_ROOMS, 
+                            room.transform.position.y, room.transform.position.z), 
+                            Quaternion.identity);
+
+                ChooseEnd(roomGameObject);
             }
         }
-        if (roomGenerator.openings.ContainsKey(3))
+        if (roomGenerator.openings.ContainsKey(RoomTypes.right))
         {
-            foreach (GameObject room in roomGenerator.openings[3])
+            foreach (GameObject room in roomGenerator.openings[RoomTypes.right])
             {
-                roomObject = Instantiate(roomGenerator.closingRoomLeft, new Vector3(room.transform.position.x + 6.042f, room.transform.position.y, room.transform.position.z), Quaternion.identity);
-                if (!choseEnd)
-                {
-                    roomObject.GetComponent<Room>().isEnd = Random.Range(0, 2) == 0;
-                    if (roomObject.GetComponent<Room>().isEnd)
-                        choseEnd = true;
-                }
+                roomGameObject = Instantiate(roomGenerator.closingRoomLeft, 
+                            new Vector3(room.transform.position.x + RoomsGenerator.DISTANCE_BETWEEN_ROOMS, 
+                            room.transform.position.y, room.transform.position.z), 
+                            Quaternion.identity);
+
+                ChooseEnd(roomGameObject);
             }
         }
 
         if (!choseEnd)
         {
-            roomObject.GetComponent<Room>().isEnd = true;
+            roomGameObject.GetComponent<Room>().isEnd = true;
+        }
+    }
+
+    private void ChooseEnd(GameObject roomGameObject)
+    {
+        if (!choseEnd)
+        {
+            Room room = roomGameObject.GetComponent<Room>();
+            room.isEnd = Random.Range(0, 2) == 0;
+            if (room.isEnd)
+                choseEnd = true;
         }
     }
 }

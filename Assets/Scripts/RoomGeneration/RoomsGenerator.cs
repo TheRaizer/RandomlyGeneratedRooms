@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RoomsGenerator : MonoBehaviour
 {
@@ -22,10 +21,25 @@ public class RoomsGenerator : MonoBehaviour
     public bool[,] RoomPlacements { get; set; }
 
     public int length;
+    public const float DISTANCE_BETWEEN_ROOMS = 6.042f;
 
-    public Dictionary<int, List<GameObject>> openings = new Dictionary<int, List<GameObject>>();
+    public Dictionary<RoomTypes, List<GameObject>> openings = new Dictionary<RoomTypes, List<GameObject>>();
 
-    public void AddToOpenings(int type, GameObject room)
+    private void Awake()
+    {
+        length = (int)Mathf.Sqrt(MaxNumberOfRooms);
+        RoomPlacements = new bool[length, length];
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+
+    public void AddToOpenings(RoomTypes type, GameObject room)
     {
         if(!openings.ContainsKey(type))
         {
@@ -36,11 +50,5 @@ public class RoomsGenerator : MonoBehaviour
         {
             openings[type].Add(room);
         }
-    }
-
-    private void Awake()
-    {
-        length = (int)Mathf.Sqrt(MaxNumberOfRooms) + 1;//+1 is temp
-        RoomPlacements = new bool[length, length];
     }
 }

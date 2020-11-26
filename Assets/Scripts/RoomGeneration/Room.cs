@@ -27,92 +27,115 @@ public class Room : MonoBehaviour
 
         if(roomGenerator.CurrentNumberOfRooms < roomGenerator.MaxNumberOfRooms)
         {
-            for(int i = 0; i < openings.Length; i++)
+            GenerateRoomsAtOpenings();
+        }
+    }
+
+    private void GenerateRoomsAtOpenings()
+    {
+        for (int roomType = 0; roomType < openings.Length; roomType++)
+        {
+            if (openings[roomType] == false)
             {
-                if (openings[i] == false) 
-                {
-                    continue;
-                }
-                GameObject room;
+                continue;
+            }
 
+            GameObject roomGameObject;
+            int randomRoomIndex;
 
-                int r;
-                switch (i)
-                {
-                    case 0:
-                        if (y + 1 < roomGenerator.length - 1)
+            switch ((RoomTypes)roomType)
+            {
+                case RoomTypes.up:
+                    if (y + 1 < roomGenerator.length - 1) // if the room we want to generate will be in the grid
+                    {
+                        if (roomGenerator.RoomPlacements[x, y + 1] == false) // if the place on the grid is empty meaning no room is there
                         {
-                            if (roomGenerator.RoomPlacements[x, y + 1] == false)
-                            {
-                                r = Random.Range(0, roomGenerator.downRooms.Length);
-                                room = Instantiate(roomGenerator.downRooms[r], new Vector3(transform.position.x, transform.position.y + 6.042f, transform.position.z), Quaternion.identity);
-                                room.GetComponent<Room>().x = x;
-                                room.GetComponent<Room>().y = y + 1;
-                                roomGenerator.RoomPlacements[x, y + 1] = true;
-                                roomGenerator.CurrentNumberOfRooms++;
-                            }
+                            randomRoomIndex = Random.Range(0, roomGenerator.downRooms.Length); // pick on of the rooms that has an opening below it
+
+                            //generate the room in the game
+                            roomGameObject = Instantiate(roomGenerator.downRooms[randomRoomIndex],
+                                new Vector3(transform.position.x, transform.position.y + RoomsGenerator.DISTANCE_BETWEEN_ROOMS, transform.position.z),
+                                Quaternion.identity);
+
+                            InitializeRoom(roomGameObject, x, y + 1);
                         }
-                        else
+                    }
+                    else
+                    {
+                        ///<summary>
+                        /// If we are trying to generate a room that cannot fit within the room grid
+                        /// then that means that this current room is at the edge meaning it is leaving
+                        /// an opening that we must close. So we will tally the opening it creates.
+                        /// In this case it creates a opening above it.
+                        ///</summary>
+                        roomGenerator.AddToOpenings((RoomTypes)roomType, gameObject);
+                    }
+                    break;
+
+                case RoomTypes.down:
+                    if (y - 1 >= 0)
+                    {
+                        if (roomGenerator.RoomPlacements[x, y - 1] == false)
                         {
-                            roomGenerator.AddToOpenings(i, gameObject);
+                            randomRoomIndex = Random.Range(0, roomGenerator.upRooms.Length);
+                            roomGameObject = Instantiate(roomGenerator.upRooms[randomRoomIndex],
+                                new Vector3(transform.position.x, transform.position.y - RoomsGenerator.DISTANCE_BETWEEN_ROOMS, transform.position.z),
+                                Quaternion.identity);
+                            InitializeRoom(roomGameObject, x, y - 1);
                         }
-                        break;
-                    case 1:
-                        if (y - 1 >= 0)
+                    }
+                    else
+                    {
+                        roomGenerator.AddToOpenings((RoomTypes)roomType, gameObject);
+                    }
+                    break;
+
+                case RoomTypes.left:
+                    if (x - 1 >= 0)
+                    {
+                        if (roomGenerator.RoomPlacements[x - 1, y] == false)
                         {
-                            if (roomGenerator.RoomPlacements[x, y - 1] == false)
-                            {
-                                r = Random.Range(0, roomGenerator.upRooms.Length);
-                                room = Instantiate(roomGenerator.upRooms[r], new Vector3(transform.position.x, transform.position.y - 6.042f, transform.position.z), Quaternion.identity);
-                                room.GetComponent<Room>().x = x;
-                                room.GetComponent<Room>().y = y - 1;
-                                roomGenerator.RoomPlacements[x, y - 1] = true;
-                                roomGenerator.CurrentNumberOfRooms++;
-                            }
+                            randomRoomIndex = Random.Range(0, roomGenerator.rightRooms.Length);
+                            roomGameObject = Instantiate(roomGenerator.rightRooms[randomRoomIndex],
+                                new Vector3(transform.position.x - RoomsGenerator.DISTANCE_BETWEEN_ROOMS, transform.position.y, transform.position.z),
+                                Quaternion.identity);
+                            InitializeRoom(roomGameObject, x - 1, y);
                         }
-                        else
+                    }
+                    else
+                    {
+                        roomGenerator.AddToOpenings((RoomTypes)roomType, gameObject);
+                    }
+                    break;
+
+                case RoomTypes.right:
+                    if (x + 1 < roomGenerator.length - 1)
+                    {
+                        if (roomGenerator.RoomPlacements[x + 1, y] == false)
                         {
-                            roomGenerator.AddToOpenings(i, gameObject);
+                            randomRoomIndex = Random.Range(0, roomGenerator.leftRooms.Length);
+                            roomGameObject = Instantiate(roomGenerator.leftRooms[randomRoomIndex],
+                                new Vector3(transform.position.x + RoomsGenerator.DISTANCE_BETWEEN_ROOMS, transform.position.y, transform.position.z),
+                                Quaternion.identity);
+                            InitializeRoom(roomGameObject, x + 1, y);
                         }
-                        break;
-                    case 2:
-                        if (x - 1 >= 0)
-                        {
-                            if (roomGenerator.RoomPlacements[x - 1, y] == false)
-                            {
-                                r = Random.Range(0, roomGenerator.rightRooms.Length);
-                                room = Instantiate(roomGenerator.rightRooms[r], new Vector3(transform.position.x - 6.042f, transform.position.y, transform.position.z), Quaternion.identity);
-                                room.GetComponent<Room>().x = x - 1;
-                                room.GetComponent<Room>().y = y;
-                                roomGenerator.RoomPlacements[x - 1, y] = true;
-                                roomGenerator.CurrentNumberOfRooms++;
-                            }
-                        }
-                        else
-                        {
-                            roomGenerator.AddToOpenings(i, gameObject);
-                        }
-                        break;
-                    case 3:
-                        if (x + 1 < roomGenerator.length - 1)
-                        { 
-                            if (roomGenerator.RoomPlacements[x + 1, y] == false)
-                            {
-                                r = Random.Range(0, roomGenerator.leftRooms.Length);
-                                room = Instantiate(roomGenerator.leftRooms[r], new Vector3(transform.position.x + 6.042f, transform.position.y, transform.position.z), Quaternion.identity);
-                                room.GetComponent<Room>().x = x + 1;
-                                room.GetComponent<Room>().y = y;
-                                roomGenerator.RoomPlacements[x + 1, y] = true;
-                                roomGenerator.CurrentNumberOfRooms++;
-                            }
-                        }
-                        else
-                        {
-                            roomGenerator.AddToOpenings(i, gameObject);
-                        }
-                        break;
-                }
+                    }
+                    else
+                    {
+                        roomGenerator.AddToOpenings((RoomTypes)roomType, gameObject);
+                    }
+                    break;
             }
         }
+    }
+
+    private void InitializeRoom(GameObject room, int x, int y)
+    {
+        Room roomObject = room.GetComponent<Room>();
+
+        roomObject.x = x;
+        roomObject.y = y;
+        roomGenerator.RoomPlacements[x, y] = true;
+        roomGenerator.CurrentNumberOfRooms++;
     }
 }
