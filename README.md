@@ -3,5 +3,5 @@
 - All rooms can be visited. 
 - Made with Unity Engine
 
-For more information about my implementation visit:
-[![Visuals](https://img.youtube.com/vi/TbBCxSujAT0&t=3s/1.jpg)](https://www.youtube.com/watch?v=TbBCxSujAT0&t=3s)
+For a visual of my implementation watch:
+https://www.youtube.com/watch?v=TbBCxSujAT0&t=3s
